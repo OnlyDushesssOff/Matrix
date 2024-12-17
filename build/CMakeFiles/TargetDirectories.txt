@@ -1,0 +1,3 @@
+C:/Users/andre/Programs/Visual Studio code/C++/Matrix/build/CMakeFiles/main.dir
+C:/Users/andre/Programs/Visual Studio code/C++/Matrix/build/CMakeFiles/edit_cache.dir
+C:/Users/andre/Programs/Visual Studio code/C++/Matrix/build/CMakeFiles/rebuild_cache.dir
