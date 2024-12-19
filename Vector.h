@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <math.h>
+#include "Matrix.h"
 
 template <class T>
 class Vector{
@@ -74,7 +75,7 @@ public:
     }
 
     Vector operator+(const Vector& vec){
-        if((_size != vec._size) && (_startIndex != vec._startIndex)){
+        if((_size != vec._size) || (_startIndex != vec._startIndex)){
             std::cout << "operator+ error: vectors of different sizes"<<std::endl;;
             return 0;
         }
@@ -86,8 +87,8 @@ public:
     }
 
     Vector operator-(const Vector& vec){
-        if((_size != vec._size) && (_startIndex != vec._startIndex)){
-            std::cout << "operator+ error: vectors of different sizes"<<std::endl;;
+        if((_size != vec._size) || (_startIndex != vec._startIndex)){
+            std::cout << "operator- error: vectors of different sizes"<<std::endl;;
             return 0;
         }
         Vector res(_size, _startIndex);
@@ -97,25 +98,40 @@ public:
         return res;
     }
 
-    Vector operator*(const Vector& vec){ // скалярное произведение
-        if((_size != vec._size) && (_startIndex != vec._startIndex)){
-            std::cout << "operator+ error: vectors of different sizes"<<std::endl;;
+    T operator*(const Vector& vec) const { // скалярное произведение
+        if((_size + _startIndex) != (vec._startIndex + vec._size)){
+            std::cout << "operator* error: vectors of different sizes"<<std::endl;;
             return 0;
         }
-        Vector res(_size, _startIndex);
-        for(size_t i = 0; i < _size; i++){
-            res[i] = _array[i] * vec._array[i];
+        T res = 0;
+        size_t asize = _size;
+        size_t bsize = vec._size;
+        while ((asize != 0)&&(bsize != 0)){
+            res += vec._array[bsize-1] * _array[asize-1];
+            asize--;
+            bsize--;
         }
         return res;
     }
 
-    Vector operator*(const int& num){
-        Vector res(_size, _startIndex);
-        for(size_t i = 0; i < _size + _startIndex; i++){
-            res[i] = _array[i] * num;
+    Vector<T> operator*(const Vector<Vector<T>>& mat){
+        if(mat.GetSize() != _size + _startIndex){
+            std::cout << "methodVM error: vectors and matrix of different sizes";
+            Vector<T> res;
+            return res;
+        }
+        Vector<T> res(mat.GetSize());
+        size_t count = 1;
+        for(size_t i = 0; i < mat.GetSize(); i++){
+            for(size_t j = 0; j<count; j++){
+                if((j >= _startIndex)){
+                    res[i] = res[i] + mat[j][i-mat[j].GetStartIndex()] * _array[j-_startIndex];
+                }
+            }
+            count++;
         }
         return res;
-    };
+    }
 
     friend std::ostream& operator<<(std::ostream& os, const Vector& tmp){
         if(tmp._size == 0){

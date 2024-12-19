@@ -25,10 +25,6 @@ public:
         return Vector<Vector<T>>::operator-(mat);
     }
 
-    Matrix operator*(const int& num){
-        return Vector<Vector<T>>::operator*(num);
-    }
-
     Matrix operator*(const Matrix& mat){
         Matrix res(this->_size);
         for(size_t i = 0; i < this->_size; i++){
@@ -40,6 +36,42 @@ public:
                     res[i][j-mat[i].GetStartIndex()] += this->_array[i][k-mat[i].GetStartIndex()] * (mat._array[k][j-mat[k].GetStartIndex()]);
                 }
             }
+        }
+        return res;
+    }
+
+    // Matrix operator*(const Matrix& mat){
+        
+    // }
+
+    Vector<T> operator*(const Vector<T>& vec){ // матрица х вектор
+        if(this->_size != vec.GetSize() + vec.GetStartIndex()){
+            std::cout << "methodMV error: vectors and matrix of different sizes";
+            Vector<T> res;
+            return res;
+        }
+        Vector<T> res(this->_size);
+        for(size_t i = 0; i < this->_size; i++){
+            res[i] = this->_array[i] * vec;
+        }
+        return res;
+    }
+
+    Vector<T> multipVM(const Vector<T>& vec){
+        if(this->_size != vec.GetSize() + vec.GetStartIndex()){
+            std::cout << "methodVM error: vectors and matrix of different sizes";
+            Vector<T> res;
+            return res;
+        }
+        Vector<T> res(this->_size);
+        size_t count = 1;
+        for(size_t i = 0; i < this->_size; i++){
+            for(size_t j = 0; j<count; j++){
+                if((j >= vec.GetStartIndex())){
+                    res[i] += this->_array[j][i-this->_array[j].GetStartIndex()] * vec[j-vec.GetStartIndex()];
+                }
+            }
+            count++;
         }
         return res;
     }
